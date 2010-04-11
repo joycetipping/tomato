@@ -1,0 +1,239 @@
+Tomato
+| A Minimalistic Command-Line Recipe Manager
+ 
+To access this documentation from within Tomato, run the command
+| $ doc
+ 
+~*~
+ 
+Hi! Welcome to Tomato!
+ 
+What is Tomato?  
+|
+| Tomato is a very simple command-line recipe manager. It allows
+| you to keep your recipes as a collection of text files and
+| provides rudimentary import and export utilities.
+|
+| Tomato is built on top of Self-Modifying Perl, a little
+| platform my husband (Spencer) whipped up. Long story short, it
+| provides a repl shell that simulates a command line
+| environment, but at the end of the day, all of your data is
+| contained in one file.  If you want the techy 101, visit his
+| site: www.spencertipping.com/#section=self-modifying-perl 
+ 
+The story behind Tomato. 
+|
+| I've been looking for the right way to manage my recipes for
+| years. I used to use full-featured graphical applications.
+| They worked ... okay. The problem was that I didn't like to be
+| locked into one format or have to jump through a lot of hoops.
+| That inflexibility bought you a lot of features, like
+| nutritional analysis and a shopping list manager, but it turned
+| out I never used them. So after a while, I jumped ship.
+|
+| For a while, I used wysiwyg editors like Lyx. But it was still
+| graphical (read: slooow) and it was clunky having all my
+| recipes in one file. Eventually I started putting each recipe
+| into its own text file. I liked the simplicity and the
+| separation, but I wished there was some way to bundle it all
+| together. Enter Self-Modifying Perl!!
+ 
+What doesn't Tomato do?
+|
+| As I'm sure you've figured out, Tomato is painfully simple.
+| It really doesn't do anything fancy.
+|
+| If fancy was what you were hoping for -- such as the
+| aforementioned nutritional analyses and shopping list managers
+| -- I recommend krecipes or gourmet, both of which are available
+| through the package manager.
+ 
+I want to try Tomato. Where do I start?
+|
+| Awesome! Well then, go ahead and download the Tomato file and
+| drop it into whichever directory you'd like. You can also
+| change its name to whatever you please, let's say "orange". Now
+| on the command line, run "chmod u+x orange". You should be all
+| ready to go!
+ 
+A little meta setup:
+|
+| To enter Tomato's environment, run your file name on the
+| command line. Unless you have your current path aliased, you'll
+| want to precede it with a "./" for your current directory:
+| 
+|   % ./orange
+|
+| Now that you're in, you'll notice you have a shell prompt that
+| says "tomato$". If you'd like to change the prompt, say to
+| "orange" (to match your file name), you can say 
+|
+|   $ name = orange
+|
+| Your prompt should now read "orange$". 
+| 
+| Next, you might want to name your recipe book, like so:
+|
+|   $ title = "My Party Recipes"
+|
+| That way, when you export your recipes, it will be titled "My
+| Party Recipes".
+|
+| Not quite sure you typed that in right? No problem. Just ask
+| Tomato to retrieve that value for you:
+|
+|   $ name
+|   $ title
+|
+| You can reset these values anytime you'd like.
+ 
+Creating and editing recipes:
+|
+| Now we're ready to populate our recipe book! First of all, I
+| recommend that recipes be named according to the following
+| convention:
+|
+|   category::recipe 
+|   
+| You are, of course, free to do otherwise, but you're likely to
+| break some of the utilities, such as show by category and
+| recipe_export by category.
+|
+| To create a new recipe, use the "new" keyword followed by the
+| recipe name. Both dashes and spaces are fine.
+|
+|   $ new category::recipe
+|   $ new poultry::chicken-enchiladas
+|
+| To edit a recipe, simply type in its name:
+|
+|   $ category::recipe
+|   $ poultry::chicken-enchiladas
+ 
+Managing your recipes:
+|
+| To copy or move a recipe, you use "copy" and "move", very much
+| like you'd use "cp" or "mv" in bash:
+|
+|   $ copy recipe1 recipe2
+|   $ move soup::egg soup::egg-drop
+|
+| To delete one or more recipes, use "remove":
+|
+|   $ remove recipe1 recipe2 recipe3
+ 
+Viewing your recipes:
+|
+| To manage your recipes effectively, it would be very helpful to
+| be able to see what you've got to work with! To see a list of
+| your recipes, say 
+|
+|   $ show
+|
+| If you'd like to see a list of only the recipes in certain
+| categories, you can say
+|
+|   $ show category1 category2 category3 ...
+|   $ show poultry dessert soup
+|
+| Lists are very helpful, but what about viewing the contents of
+| recipes? Obviously, to see the contents of one recipe you can
+| simply open it in the editor. But what about a plurality? For
+| these occasions, Tomato provides the "view" command, which
+| works just like "show":
+|
+|   $ view
+|   $ view category1 category2 category3
+|
+| The top statement will print out every recipe, while the bottom
+| will confine itself to the categories given.
+|
+| Can't remember what categories you have available? View a list
+| of them like so:
+|
+|   $ categories
+ 
+Importing:
+|
+| When importing, you can either be inside Tomato or outside it
+| in your bash shell. Unfortunately, whichever environment you
+| choose, you won't be unable to tab out file names from the
+| other. So pick your poison based on your situation. :S
+|
+| To import from within Tomato, use the following syntax:
+|
+|   $ recipe_import file1 file2 file3 category::recipe-name
+|
+| Notice you can specify more than one file to be imported;
+| Tomato will simply concatenate their contents and deposit the
+| whole thing into "category::recipe_name".
+|
+| To import from outside Tomato, you'll use bash to feed the
+| contents of your files to Tomato's "recipe_import" function:
+|
+|   % cat file1 file2 | tomato recipe_import category::recipe-name
+ 
+Exporting:
+|
+| Fortunately, exporting is more easily done from within Tomato.
+| To export your entire recipe book into one text file
+| ("recipes.txt"),
+|
+|   $ recipe_export recipes.txt
+|
+| Unless otherwise specified, "recipes.txt" will be dropped in
+| the same directory that your Tomato file is in (your working
+| directory).
+|
+| If you'd like to export only certain categories into a single
+| external file, use the (now-familiar) syntax
+| 
+|   $ recipe_export category1 category2 category3 recipes.txt
+|
+| I purposely emphasize SINGLE external file because Tomato also
+| provides a utility to export each recipe into its own file.
+|
+|   $ recipe_export_each
+|   $ recipe_export_each category1 category2 category3
+|
+| The new files will have the same names as their Tomato
+| counterparts (in a more shell-friendly format) and will be
+| dropped inside the working directory.
+|
+| It's worth mentioning how to export from outside Tomato. In
+| this case, use the "view" command and pipe Tomato's output into
+| a file of your choosing:
+|
+|   % tomato view > recipes.txt
+|   % tomato view category1 category2 category3 > recipes.txt
+|
+| You may have noticed that Tomato doesn't provide a utility to
+| export just one recipe. You're right -- to export just one
+| recipe, simply do a "save as" from within your editor. In Vim,
+| use the command ":w! recipe.txt" and a copy will be saved in
+| your working directory (unless, of course, you specified
+| otherwise).
+ 
+Miscellaneous things:
+|
+| As you may have noticed, Tomato has a simplistic autocomplete.
+| It's not quite as sophisticated as the bash shell's, but it
+| gets the job done!
+|
+| After performing certain operations, such as importing,
+| copying, or moving a recipe, the autocomplete will be a little
+| behind. To "tell" autocomplete about your changes, reload
+| Tomato by saying
+|
+|   $ reload
+|
+| This is a good thing to do in general whenever it feels like
+| you and Tomato aren't on the same page. :)
+ 
+~*~
+ 
+Written by:
+|
+| Joyce Tipping <joyce@spencertipping.com>
+|
+| Feel free to contact me with any comments or complaints. :)
