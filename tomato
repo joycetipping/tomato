@@ -1,0 +1,1679 @@
+#!/usr/bin/perl
+
+use File::Temp  'tempfile';
+use Carp        'carp';
+use Digest::SHA 'sha256_base64';
+
+$|++;
+
+my %data;
+my %externalized_functions;
+my @data_types;
+my @script_args;
+
+sub meta::define_form {
+  my ($namespace, $delegate) = @_;
+  push @data_types, $namespace;
+  *{"meta::${namespace}::implementation"} = $delegate;
+  *{"meta::$namespace"} = sub {
+    my ($name, $value) = @_;
+    chomp $value;
+    $data{"${namespace}::$name"} = $value;
+    $delegate->($name, $value);
+  };
+}
+
+meta::define_form 'meta', sub {
+  my ($name, $value) = @_;
+  eval $value;
+  carp $@ if $@;
+};
+
+meta::meta('datatypes::bootstrap', <<'__guYWiOv4zBmdrlI3k3sW7f/q/xsX38Xvzz0dwwLCIRM');
+meta::define_form 'bootstrap', sub {};
+__guYWiOv4zBmdrlI3k3sW7f/q/xsX38Xvzz0dwwLCIRM
+
+meta::meta('datatypes::data', <<'__j7lFraXGRfKk8ymj2mDJhNbCQMk9FSciN1hdDhzM99U');
+meta::define_form 'data', sub {
+  my ($name, undef) = @_;
+  $externalized_functions{$name} = "data::$name";
+  *{$name} = sub {
+    associate("data::$name", $_[1] || join('', <STDIN>)) if @_ > 0 && $_[0] eq '=';
+    retrieve("data::$name");
+  };
+};
+__j7lFraXGRfKk8ymj2mDJhNbCQMk9FSciN1hdDhzM99U
+
+meta::meta('datatypes::function', <<'__XSIHGGHv0Sh0JBj9KIrP/OzuuB2epyvn9pgtZyWE6t0');
+meta::define_form 'function', sub {
+  my ($name, $value) = @_;
+  $externalized_functions{$name} = "function::$name";
+  *{$name} = eval "sub {\n$value\n}";
+  carp $@ if $@;
+};
+__XSIHGGHv0Sh0JBj9KIrP/OzuuB2epyvn9pgtZyWE6t0
+
+meta::meta('datatypes::internal_function', <<'__heBxmlI7O84FgR+9+ULeiCTWJ4hqd079Z02rZnl9Ong');
+meta::define_form 'internal_function', sub {
+  my ($name, $value) = @_;
+  *{$name} = eval "sub {\n$value\n}";
+  carp $@ if $@;
+};
+__heBxmlI7O84FgR+9+ULeiCTWJ4hqd079Z02rZnl9Ong
+
+meta::meta('datatypes::recipe', <<'__+rbBnBflVZaBLgb9bx9u2yntYvqnPBZZtzJncOwdMMU');
+meta::define_form 'recipe', sub {
+  my ($name, undef) = @_;
+  $externalized_functions{$name} = "recipe::$name";
+  *{$name} = sub {edit("recipe::$name")};
+};
+__+rbBnBflVZaBLgb9bx9u2yntYvqnPBZZtzJncOwdMMU
+
+meta::meta('internal::runtime', <<'__Nd6Dp1A6nL7yAGeoRfeZETeaW8vnPN8HI9Diqo66vDA');
+meta::define_form 'internal', \&meta::meta::implementation;
+__Nd6Dp1A6nL7yAGeoRfeZETeaW8vnPN8HI9Diqo66vDA
+
+meta::bootstrap('initialization', <<'__eAoB//22c4PJnJQF2S4Px24njtvjLQIauFTibuoc1gY');
+#!/usr/bin/perl
+
+use File::Temp  'tempfile';
+use Carp        'carp';
+use Digest::SHA 'sha256_base64';
+
+$|++;
+
+my %data;
+my %externalized_functions;
+my @data_types;
+my @script_args;
+
+sub meta::define_form {
+  my ($namespace, $delegate) = @_;
+  push @data_types, $namespace;
+  *{"meta::${namespace}::implementation"} = $delegate;
+  *{"meta::$namespace"} = sub {
+    my ($name, $value) = @_;
+    chomp $value;
+    $data{"${namespace}::$name"} = $value;
+    $delegate->($name, $value);
+  };
+}
+
+meta::define_form 'meta', sub {
+  my ($name, $value) = @_;
+  eval $value;
+  carp $@ if $@;
+};
+
+__eAoB//22c4PJnJQF2S4Px24njtvjLQIauFTibuoc1gY
+
+meta::bootstrap('pod', <<'__0h2CBA2cqa4qd6nox9dul6Jn9hcJFHw3uPdC89Xim7o');
+
+=head1 NAME
+
+object - Stateful file-based object
+
+=head1 SYNOPSYS
+
+object [options] action [arguments...]
+
+object shell
+
+=head1 DESCRIPTION
+
+Stateful objects preserve their state between executions by rewriting themselves. Each time the script exits it replaces its contents with its new state. Thus
+state management, for user-writable scripts, is completely transparent.
+
+An object rewrites itself only if its state has changed. This may seem like a dangerous operation, but some checks are put into place to ensure that it goes
+smoothly. First, the object is initially written to a separate file. Next, that file is executed and asked to provide a hashsum of its contents. The original
+object is rewritten only if that hashsum is correct. This ensures that the replacement object is functional and has the right data.
+
+Currently the only known way to lose your data is to edit the serialization-related functions in such a way that they no longer function. However, this is not
+something most people will normally do. In the future there may be a locking mechanism to prevent unintentional edits of these attributes.
+
+=cut
+__0h2CBA2cqa4qd6nox9dul6Jn9hcJFHw3uPdC89Xim7o
+
+meta::data('default-action', <<'__zmNcTqv/Xk9W26j7HjnKI1UwqitrGFM+7xrzhiAWxXc');
+shell
+__zmNcTqv/Xk9W26j7HjnKI1UwqitrGFM+7xrzhiAWxXc
+
+meta::data('documentation', <<'__W4vmAyyeIZA6XybB2EQslz7QnkE7y2DrnnCTCQJZdZ0');
+Tomato
+| A Minimalistic Command-Line Recipe Manager
+ 
+To access this documentation from within Tomato, run the command
+| $ doc
+ 
+~*~
+ 
+Hi! Welcome to Tomato!
+ 
+What is Tomato?  
+|
+| Tomato is a very simple command-line recipe manager. It allows
+| you to keep your recipes as a collection of text files and
+| provides rudimentary import and export utilities.
+|
+| Tomato is built on top of Self-Modifying Perl, a little
+| platform my husband (Spencer) whipped up. Long story short, it
+| provides a repl shell that simulates a command line
+| environment, but at the end of the day, all of your data is
+| contained in one file.  If you want the techy 101, visit his
+| site: www.spencertipping.com/#section=self-modifying-perl 
+ 
+The story behind Tomato. 
+|
+| I've been looking for the right way to manage my recipes for
+| years. I used to use full-featured graphical applications.
+| They worked ... okay. The problem was that I didn't like to be
+| locked into one format or have to jump through a lot of hoops.
+| That inflexibility bought you a lot of features, like
+| nutritional analysis and a shopping list manager, but it turned
+| out I never used them. So after a while, I jumped ship.
+|
+| For a while, I used wysiwyg editors like Lyx. But it was still
+| graphical (read: slooow) and it was clunky having all my
+| recipes in one file. Eventually I started putting each recipe
+| into its own text file. I liked the simplicity and the
+| separation, but I wished there was some way to bundle it all
+| together. Enter Self-Modifying Perl!!
+ 
+What doesn't Tomato do?
+|
+| As I'm sure you've figured out, Tomato is painfully simple.
+| It really doesn't do anything fancy.
+|
+| If fancy was what you were hoping for -- such as the
+| aforementioned nutritional analyses and shopping list managers
+| -- I recommend krecipes or gourmet, both of which are available
+| through the package manager.
+ 
+I want to try Tomato. Where do I start?
+|
+| Awesome! Well then, go ahead and download the Tomato file and
+| drop it into whichever directory you'd like. You can also
+| change its name to whatever you please, let's say "orange". Now
+| on the command line, run "chmod u+x orange". You should be all
+| ready to go!
+ 
+A little meta setup:
+|
+| To enter Tomato's environment, run your file name on the
+| command line. Unless you have your current path aliased, you'll
+| want to precede it with a "./" for your current directory:
+| 
+|   % ./orange
+|
+| Now that you're in, you'll notice you have a shell prompt that
+| says "tomato$". If you'd like to change the prompt, say to
+| "orange" (to match your file name), you can say 
+|
+|   $ name = orange
+|
+| Your prompt should now read "orange$". 
+| 
+| Next, you might want to name your recipe book, like so:
+|
+|   $ title = "My Party Recipes"
+|
+| That way, when you export your recipes, it will be titled "My
+| Party Recipes".
+|
+| Not quite sure you typed that in right? No problem. Just ask
+| Tomato to retrieve that value for you:
+|
+|   $ name
+|   $ title
+|
+| You can reset these values anytime you'd like.
+ 
+Creating and editing recipes:
+|
+| Now we're ready to populate our recipe book! First of all, I
+| recommend that recipes be named according to the following
+| convention:
+|
+|   category::recipe 
+|   
+| You are, of course, free to do otherwise, but you're likely to
+| break some of the utilities, such as show by category and
+| recipe_export by category.
+|
+| To create a new recipe, use the "new" keyword followed by the
+| recipe name. Both dashes and spaces are fine.
+|
+|   $ new category::recipe
+|   $ new poultry::chicken-enchiladas
+|
+| To edit a recipe, simply type in its name:
+|
+|   $ category::recipe
+|   $ poultry::chicken-enchiladas
+ 
+Managing your recipes:
+|
+| To copy or move a recipe, you use "copy" and "move", very much
+| like you'd use "cp" or "mv" in bash:
+|
+|   $ copy recipe1 recipe2
+|   $ move soup::egg soup::egg-drop
+|
+| To delete one or more recipes, use "remove":
+|
+|   $ remove recipe1 recipe2 recipe3
+ 
+Viewing your recipes:
+|
+| To manage your recipes effectively, it would be very helpful to
+| be able to see what you've got to work with! To see a list of
+| your recipes, say 
+|
+|   $ show
+|
+| If you'd like to see a list of only the recipes in certain
+| categories, you can say
+|
+|   $ show category1 category2 category3 ...
+|   $ show poultry dessert soup
+|
+| Lists are very helpful, but what about viewing the contents of
+| recipes? Obviously, to see the contents of one recipe you can
+| simply open it in the editor. But what about a plurality? For
+| these occasions, Tomato provides the "view" command, which
+| works just like "show":
+|
+|   $ view
+|   $ view category1 category2 category3
+|
+| The top statement will print out every recipe, while the bottom
+| will confine itself to the categories given.
+|
+| Can't remember what categories you have available? View a list
+| of them like so:
+|
+|   $ categories
+ 
+Importing:
+|
+| When importing, you can either be inside Tomato or outside it
+| in your bash shell. Unfortunately, whichever environment you
+| choose, you won't be unable to tab out file names from the
+| other. So pick your poison based on your situation. :S
+|
+| To import from within Tomato, use the following syntax:
+|
+|   $ recipe_import file1 file2 file3 category::recipe-name
+|
+| Notice you can specify more than one file to be imported;
+| Tomato will simply concatenate their contents and deposit the
+| whole thing into "category::recipe_name".
+|
+| To import from outside Tomato, you'll use bash to feed the
+| contents of your files to Tomato's "recipe_import" function:
+|
+|   % cat file1 file2 | tomato recipe_import category::recipe-name
+ 
+Exporting:
+|
+| Fortunately, exporting is more easily done from within Tomato.
+| To export your entire recipe book into one text file
+| ("recipes.txt"),
+|
+|   $ recipe_export recipes.txt
+|
+| Unless otherwise specified, "recipes.txt" will be dropped in
+| the same directory that your Tomato file is in (your working
+| directory).
+|
+| If you'd like to export only certain categories into a single
+| external file, use the (now-familiar) syntax
+| 
+|   $ recipe_export category1 category2 category3 recipes.txt
+|
+| I purposely emphasize SINGLE external file because Tomato also
+| provides a utility to export each recipe into its own file.
+|
+|   $ recipe_export_each
+|   $ recipe_export_each category1 category2 category3
+|
+| The new files will have the same names as their Tomato
+| counterparts (in a more shell-friendly format) and will be
+| dropped inside the working directory.
+|
+| It's worth mentioning how to export from outside Tomato. In
+| this case, use the "view" command and pipe Tomato's output into
+| a file of your choosing:
+|
+|   % tomato view > recipes.txt
+|   % tomato view category1 category2 category3 > recipes.txt
+|
+| You may have noticed that Tomato doesn't provide a utility to
+| export just one recipe. You're right -- to export just one
+| recipe, simply do a "save as" from within your editor. In Vim,
+| use the command ":w! recipe.txt" and a copy will be saved in
+| your working directory (unless, of course, you specified
+| otherwise).
+ 
+Miscellaneous things:
+|
+| As you may have noticed, Tomato has a simplistic autocomplete.
+| It's not quite as sophisticated as the bash shell's, but it
+| gets the job done!
+|
+| After performing certain operations, such as importing,
+| copying, or moving a recipe, the autocomplete will be a little
+| behind. To "tell" autocomplete about your changes, reload
+| Tomato by saying
+|
+|   $ reload
+|
+| This is a good thing to do in general whenever it feels like
+| you and Tomato aren't on the same page. :)
+ 
+~*~
+ 
+Written by:
+|
+| Joyce Tipping <joyce@spencertipping.com>
+|
+| Feel free to contact me with any comments or complaints. :)
+__W4vmAyyeIZA6XybB2EQslz7QnkE7y2DrnnCTCQJZdZ0
+
+meta::data('meta-associations', <<'__GGcLMIdIpQPyuKPkIVDso+D8DmmbfkaLqgG4z5YhJeA');
+^function:: .pl
+^internal_function:: .pl
+^meta:: .pl
+^bootstrap:: .pl
+__GGcLMIdIpQPyuKPkIVDso+D8DmmbfkaLqgG4z5YhJeA
+
+meta::data('name', <<'__XtcowvpddnvGwexqcy2x43w0O+RpE+ZJjTQPd4JpHxQ');
+tomato
+__XtcowvpddnvGwexqcy2x43w0O+RpE+ZJjTQPd4JpHxQ
+
+meta::data('title', <<'__DUxSnkUsODtz1hr2D+HUT8z2JQxEQ1Jk+JZcdMQItPs');
+Joyce's Recipe Book
+__DUxSnkUsODtz1hr2D+HUT8z2JQxEQ1Jk+JZcdMQItPs
+
+meta::data('tomato-meta', <<'__V9s9stGCuuZWbmNlrGp9heej++p61MdYE8oh5Km1ZWY');
+Data:
+  tomato-meta
+  documentation
+  title
+
+Functions:
+ *cat
+  doc                 documentation
+
+  / Works with individual recipes
+  new
+  copy
+  move
+  remove
+  recipe_import
+
+  / Works with categories
+  categories
+  show                categories, list
+  view                categories, list, title, trim
+  recipe_export       view
+  recipe_export_each  categories, list
+
+ *import
+ *export
+
+Internal Functions:
+  list
+ *trim
+
+Meta:
+  datatypes::recipe
+__V9s9stGCuuZWbmNlrGp9heej++p61MdYE8oh5Km1ZWY
+
+meta::function('add-to', <<'__KBgra0vG1gIsUI8CCVf4ZEdCatZDCdVO6HuUx+jOJ9Q');
+my ($filename) = @_;
+my @members = grep /^implementation::/, keys %data;
+
+for (@members) {
+  my $destination_name = basename($_);
+  open my($handle), "| $filename import $destination_name" or messages::error("Attribute $_ could not be written.");
+  print $handle retrieve($_);
+  close $handle;
+}
+__KBgra0vG1gIsUI8CCVf4ZEdCatZDCdVO6HuUx+jOJ9Q
+
+meta::function('cat', <<'__2jDTmO1dTce62MSheboF00h9IcTTzdqm4uXiHjcomo4');
+join "\n", @data{@_};
+__2jDTmO1dTce62MSheboF00h9IcTTzdqm4uXiHjcomo4
+
+meta::function('categories', <<'__EgHYNVc2HW0NgF2bnbBtI8X7+29SKN2atHkyrltI090');
+# Scans through recipes and returns a list of existing categories.
+
+# Grab all categories
+my @categories = map {s/^recipe::(.*?)::.*$/\1/; $_} grep /^recipe::/, sort keys %data;
+
+# Remove duplicates
+my %hash = map {$_, 1} @categories;
+my @unique_categories = sort keys %hash;
+
+join "\n", @unique_categories;
+__EgHYNVc2HW0NgF2bnbBtI8X7+29SKN2atHkyrltI090
+
+meta::function('clone', <<'__qP6xPZE75s9g0XJIiC6FGw0vnj2j0glUzsAHxyA3lvY');
+for (@_) {
+  if ($_) {
+    eval {
+      file::write($_, serialize(), noclobber => 1);
+      chmod(0700, $_);
+      print "File $_ cloned successfully.\n";
+    };
+
+    print "$@\n" if $@;
+  }
+}
+__qP6xPZE75s9g0XJIiC6FGw0vnj2j0glUzsAHxyA3lvY
+
+meta::function('copy', <<'__TmL6XPurtre3Q/xbuI+Xwa0sYBOf8Vc4o7dKuXW7iZ8');
+# A tool to copy recipes.
+
+my ($old, $new) = @_;
+cp ("recipe::$old", "recipe::$new");
+__TmL6XPurtre3Q/xbuI+Xwa0sYBOf8Vc4o7dKuXW7iZ8
+
+meta::function('cp', <<'__yn1SQkcEk6o+gnuCy3QGVFtQb2piaCoUdJPGUkLjpD4');
+my ($from, $to) = @_;
+$data{$to} = $data{$from} if $data{$from};
+messages::error("No such attribute $from") unless $data{$from};
+$data{$from};
+__yn1SQkcEk6o+gnuCy3QGVFtQb2piaCoUdJPGUkLjpD4
+
+meta::function('create', <<'__YDNTuzkJSNUIk4tbdwxep6/rT8uGnceIj7rljM9gusc');
+my ($name, $value) = @_;
+messages::error("Attribute $name already exists.") if grep {$_ eq $name} keys %data;
+if ($value) {
+  associate($name, $value);
+} else {
+  associate($name,'');
+  edit ($name);
+}
+__YDNTuzkJSNUIk4tbdwxep6/rT8uGnceIj7rljM9gusc
+
+meta::function('doc', <<'__wzHtdcr61VYrDtlPO4VdVJdQkcSMLzMMBxC7oNzJxpw');
+documentation ();
+__wzHtdcr61VYrDtlPO4VdVJdQkcSMLzMMBxC7oNzJxpw
+
+meta::function('edit', <<'__rAkSOSll0evjt/D0qmnz2M++ACqz6cPtN8TLTHdQUJE');
+my ($name, %options) = @_;
+
+my $meta_extension = join '', grep {
+  my $s = $_;
+  $s =~ s/\s.*$//;
+  $name =~ /$s/
+} split /\n/, &{'meta-associations'}();
+
+$meta_extension =~ s/^.*\s//;
+chomp $meta_extension;
+
+messages::error("Attribute $name does not exist.") unless grep {$_ eq $name} keys %data;
+associate($name, invoke_editor_on($data{$name} || "# Attribute $name", %options, extension => $meta_extension),
+          execute => $name !~ /^internal::/ && $name !~ /^bootstrap::/);
+delete $data{$name} if length($data{$name}) == 0;
+
+save();
+__rAkSOSll0evjt/D0qmnz2M++ACqz6cPtN8TLTHdQUJE
+
+meta::function('exists', <<'__bxU1sDtIh3+P1x0HuuY0f7sKHr9qNZUEl64m2fvwmDk');
+my $name = shift;
+grep {$_ eq $name} keys %data;
+__bxU1sDtIh3+P1x0HuuY0f7sKHr9qNZUEl64m2fvwmDk
+
+meta::function('export', <<'__I4eRG7HtLDZhFgrlr0QDrQO5MRwJYGFlotQsWQIE/d8');
+# Exports data into a text file.
+#   export attr1 attr2 attr3 ... file.txt
+
+my $name = pop @_;
+my @attributes = @_;
+
+if (@attributes) {
+  my $file = join "\n", map {cat($_)} @attributes;
+  file::write ($name, $file);
+} else {
+  messages::error ("Not enough arguments");
+}
+__I4eRG7HtLDZhFgrlr0QDrQO5MRwJYGFlotQsWQIE/d8
+
+meta::function('import', <<'__7f1Q36AcIJ8/OaaYPGUq10PPFTKnEF0CMxS56DRsjKk');
+my $name  = pop @_;
+my @files = @_;
+
+if (@files) {
+  my $files = join "", map {file::read ($_)} @files;
+  associate ($name, $files); 
+}
+else {
+  associate($name, join('', <STDIN>));
+}
+__7f1Q36AcIJ8/OaaYPGUq10PPFTKnEF0CMxS56DRsjKk
+
+meta::function('lock', <<'__pqf/HijyN91BWpnS+uWYip/mFhHhcd+M9/YdlYsvv9Y');
+my (undef, undef, $mode) = stat $0;
+chmod $mode & 0555, $0;
+__pqf/HijyN91BWpnS+uWYip/mFhHhcd+M9/YdlYsvv9Y
+
+meta::function('ls', <<'__35AN1AUygUUNRKYu3nGDhDKwuPxbpwoV1snM/GyBp/I');
+join("\n", sort keys %externalized_functions);
+
+#my @category_list = @_;
+#my @sorted_keys = sort keys %data;
+#if (@category_list) {
+#  for my $category (@category_list) {
+#    join "\n", grep /^recipe::$category::/, @sorted_keys;
+#  }
+#} else {
+#  join "\n", grep /^recipe::/, @sorted_keys;
+#}
+__35AN1AUygUUNRKYu3nGDhDKwuPxbpwoV1snM/GyBp/I
+
+meta::function('ls-a', <<'__6jKXRDXpIkzIOkcLtB2FOSTuZxqjBLyLZsF1vEmVn18');
+join("\n", map {"  $_"} sort keys %data) . "\n";
+__6jKXRDXpIkzIOkcLtB2FOSTuZxqjBLyLZsF1vEmVn18
+
+meta::function('move', <<'__/0hF33NPbTXy0Qwod8CQtKkNypp6EbRh7lBJqRX5L6M');
+# A tool to move recipes. 
+
+my ($old, $new) = @_;
+mv ("recipe::$old", "recipe::$new");
+__/0hF33NPbTXy0Qwod8CQtKkNypp6EbRh7lBJqRX5L6M
+
+meta::function('mv', <<'__PY7iwIY+6QtPN4V5hV4MOImRJVAKDkMmEKtkN34cv5Y');
+my ($from, $to) = @_;
+messages::error("The '$from' attribute does not exist.") unless grep $from, keys %data;
+$data{$to} = $data{$from};
+delete $data{$from};
+__PY7iwIY+6QtPN4V5hV4MOImRJVAKDkMmEKtkN34cv5Y
+
+meta::function('new', <<'__80UsIAmyGS8Wtih1iIAFHAQL+3Zl4zOvRL4uN4PQBao');
+my ($name) = @_;
+create("recipe::$name");
+__80UsIAmyGS8Wtih1iIAFHAQL+3Zl4zOvRL4uN4PQBao
+
+meta::function('perl', <<'__XfLS9FlyE7w0CyERaGa/CTG/y2CrH4ZDN6M0SAM3IfY');
+eval($_[0]);
+print $@ if $@;
+__XfLS9FlyE7w0CyERaGa/CTG/y2CrH4ZDN6M0SAM3IfY
+
+meta::function('pull', <<'__ZU6uOu7dBdjjoNdEL/U7yrjicOQR5OLFQAacjrKqSCg');
+my ($class_name) = @_;
+my @attributes = grep /^implementation::/, split /\n/, `$class_name ls-a`;
+
+for (@attributes) {
+  s/^\s+//;
+  s/\s+$//;
+  print STDERR "Adding $_\n";
+  associate(basename($_), `$class_name cat "$_"`);
+}
+__ZU6uOu7dBdjjoNdEL/U7yrjicOQR5OLFQAacjrKqSCg
+
+meta::function('recipe_export', <<'__Puec/JJJPVlhSOzPmcXdmeQncflsxSLZqpsY7rJVBJc');
+my $name       = pop @_;
+my @categories = @_;
+
+file::write ($name, view (@categories));
+__Puec/JJJPVlhSOzPmcXdmeQncflsxSLZqpsY7rJVBJc
+
+meta::function('recipe_export_each', <<'__v5NNhmwltk5lIxc08E/9M5Oaak5XsiLUxUZmX1Vka8Q');
+@categories = @_ ? @_ : split "\n", categories ();
+@recipes    = list (@categories);
+
+for my $recipe (@recipes) {
+  ($recipe = $string) =~ m/^recipe::(.*?)::(.*)$/;
+  my $name = "$1-$2";
+  file::write ("$name.txt", cat ("$recipe"));
+}
+__v5NNhmwltk5lIxc08E/9M5Oaak5XsiLUxUZmX1Vka8Q
+
+meta::function('recipe_import', <<'__U1v8zJaZlEgHIc19uLGkbfsJ084wxtQ301dG3pzC9/Q');
+my $name  = "recipe::" . pop @_;
+my @files = @_;
+
+import (@files, $name);
+__U1v8zJaZlEgHIc19uLGkbfsJ084wxtQ301dG3pzC9/Q
+
+meta::function('reload', <<'__GwQjnnfuj0xQlervDJ9EVWzdmdz+XL3Gq0i9rdejvzM');
+execute($_) for (grep {! (/^internal::/ || /^bootstrap::/)} keys %data);
+__GwQjnnfuj0xQlervDJ9EVWzdmdz+XL3Gq0i9rdejvzM
+
+meta::function('remove', <<'__//StOiTscwYaBuSqAQN3CoGZKqAgU1ESkGdkXSYazI0');
+# A tool to delete recipes.
+
+map {rm ("recipe::$_")} @_;
+__//StOiTscwYaBuSqAQN3CoGZKqAgU1ESkGdkXSYazI0
+
+meta::function('rm', <<'__7BVECTVo/mcT5+edC70WPc6S1xCbzAeyUCfCjkKWlww');
+for my $to_be_deleted (@_) {
+  messages::warning("$to_be_deleted does not exist") unless grep {$_ eq $to_be_deleted} keys %data;
+}
+
+delete @data{@_};
+__7BVECTVo/mcT5+edC70WPc6S1xCbzAeyUCfCjkKWlww
+
+meta::function('save', <<'__uWXGnrQr+A7Cl0zcsDuiokbWAw1XdMdjeq9gDcTMJIw');
+my $serialized_data = serialize();
+my $final_state     = state();
+
+my (undef, $temporary_filename) = tempfile("$0." . 'X' x 32, OPEN => 0);
+file::write($temporary_filename, $serialized_data);
+chmod 0700, $temporary_filename;
+
+my $observed_state = `perl $temporary_filename state`;
+chomp $observed_state;
+if ($observed_state ne $final_state) {
+  messages::error("The state of this object ($final_state) is inconsistent with the state of $temporary_filename ($observed_state).\n" .
+                  "$0 has not been updated.");
+} else {
+  eval {file::write($0, $serialized_data)};
+  warn $@ if $@;
+  my $observed_self_state = `perl $0 state`;
+  chomp $observed_self_state;
+  unlink $temporary_filename if $observed_self_state eq $final_state;
+}
+__uWXGnrQr+A7Cl0zcsDuiokbWAw1XdMdjeq9gDcTMJIw
+
+meta::function('serialize', <<'__KGiI48MlyG6RAVW5QYRK8y97y8tx+jeAwPlY5eDtMTw');
+my @keys_without_internals = grep(!/^internal::/, sort keys %data);
+join "\n", $data{'bootstrap::initialization'},
+           (grep {$_} (map {serialize::single(@_)} grep(/^meta::/,  @keys_without_internals),
+                                                   grep(!/^meta::/, @keys_without_internals),
+                                                   grep(/^internal::/, sort keys %data))),
+           "__END__";
+__KGiI48MlyG6RAVW5QYRK8y97y8tx+jeAwPlY5eDtMTw
+
+meta::function('shell', <<'__TNkPWqJRr0LhP3/rDW8I/Ztchru+UWiv3fDm3hThlIs');
+use Term::ReadLine;
+
+my $term = new Term::ReadLine "$0 shell";
+$term->ornaments(0);
+my $prompt = name() . '$ ';
+my $OUT = $term->OUT || \*STDOUT;
+
+$term->Attribs->{attempted_completion_function} = \&complete;
+
+while (defined ($_ = $term->readline($prompt))) {
+  my $command_line = $_;
+  my @args = grep length, split /\s+|("[^"\\]*(?:\\")?")/;
+  my $function_name = shift @args;
+
+  return if $function_name eq 'exit';
+
+  s/^"(.*)"$/\1/, s/\\\\"/"/g for @args;
+
+  if ($function_name) {
+    if ($externalized_functions{$function_name}) {
+      my $result = eval {&{$function_name}(@args)};
+      messages::warning($@) if $@;
+      chomp $result;
+      print $OUT $result, "\n" unless $@;
+    } else {
+      messages::warning("Command not found: $function_name");
+    }
+  }
+
+  for my $watch (@{$transient{'watch_list'}}) {
+    print $OUT eval($watch), "\n";
+    print $OUT "Error evaluating watched expression $watch: $@\n" if $@;
+  }
+
+  $prompt = name() . '$ ';
+}
+__TNkPWqJRr0LhP3/rDW8I/Ztchru+UWiv3fDm3hThlIs
+
+meta::function('show', <<'__Jxu+CMPLMA+pW/MP3bH34/Aa9kUd3NJ+tfXngIywQJ0');
+# show category1 category2 category3 ...
+# Lists the recipes in the requested categories.
+# If no categories are given, it lists all recipes.
+
+my @legitimate = split "\n", categories ();
+my @keys       =  @_ ? @_ : @legitimate;
+my @warnings   = ();
+
+my @recipes = ('');
+for my $category (@keys) {
+  if (grep {$category eq $_} @legitimate) {
+    push @recipes, map {s/^recipe::/  /; $_} list ($category);
+    push @recipes, '';
+  } else {
+    push @warnings, "  WARNING: $category is not a category";
+  }
+}
+
+join "\n", (@recipes, @warnings, "\n");
+__Jxu+CMPLMA+pW/MP3bH34/Aa9kUd3NJ+tfXngIywQJ0
+
+meta::function('size', <<'__lDGr6yVnDwcDWLkJH16MNukltjG2ypBSk/ktYb80h80');
+length(serialize());
+__lDGr6yVnDwcDWLkJH16MNukltjG2ypBSk/ktYb80h80
+
+meta::function('snapshot', <<'__qjqsCy4CTt88dIi7IWM+Varpb3GcHsYrFTxW7EwpLW0');
+my ($name) = @_;
+file::write(my $finalname = state_based_filename($name), serialize(), noclobber => 1);
+chmod 0700, $finalname;
+__qjqsCy4CTt88dIi7IWM+Varpb3GcHsYrFTxW7EwpLW0
+
+meta::function('state', <<'__1S8nzRSMoxJU/VEv2rx/NrAt1iRgXQ9ugxjUP3IFunI');
+sha256_base64 serialize();
+__1S8nzRSMoxJU/VEv2rx/NrAt1iRgXQ9ugxjUP3IFunI
+
+meta::function('unlock', <<'__08PohCY8fcNe+pWCO6ic6XOOKv48NkrxpNMmTOUIFdA');
+my (undef, undef, $mode) = stat $0;
+chmod $mode | 0200, $0;
+__08PohCY8fcNe+pWCO6ic6XOOKv48NkrxpNMmTOUIFdA
+
+meta::function('usage', <<'__oHVev4RtZlF/82SSE87y4Bf7ran2afn/HDtukOQBf9I');
+<<"EOD" . join '  ', split /\n/, ls ();
+Usage: $0 [options] action [arguments]
+Defined actions:
+EOD
+__oHVev4RtZlF/82SSE87y4Bf7ran2afn/HDtukOQBf9I
+
+meta::function('view', <<'__hq7MB6old+umoqjpyZPz9r1aywswNrh/ELZQb0wQW/Q');
+my @legitimate = split "\n", categories ();
+my @categories = @_ ? @_ : @legitimate;
+
+my @file = (title (),
+            scalar localtime,
+            '');
+
+my @warnings = ();
+
+for my $category (@categories) {
+
+  if (grep {$_ eq $category} @legitimate) {
+    push @file, "CATEGORY " . uc $category . "\n";
+    my @recipes = list ($category);
+
+    for my $recipe (@recipes) {
+      push @file, ucfirst $category,
+                  trim (cat ("$recipe")) . "\n",
+                  "~*~\n";
+    } 
+  } else {
+    push @warnings, "WARNING: $category is not a category";
+  }
+}
+
+join "\n", (@file, @warnings);
+__hq7MB6old+umoqjpyZPz9r1aywswNrh/ELZQb0wQW/Q
+
+meta::internal_function('associate', <<'__D8BKmEFp/adiPPqPnXyMOzlsBMCmuZi62UpJWdoFg/0');
+my ($name, $value, %options) = @_;
+my $namespace = namespace($name);
+messages::error("Namespace $namespace does not exist") unless grep {$_ eq $namespace} @data_types;
+$data{$name} = $value;
+execute($name) if $options{'execute'};
+__D8BKmEFp/adiPPqPnXyMOzlsBMCmuZi62UpJWdoFg/0
+
+meta::internal_function('basename', <<'__T4JEqOUYjMzssdVwV/rdgAhvr0Vz9TQUo0noTdeBLxw');
+my ($name) = @_;
+$name =~ s/^[^:]*:://;
+$name;
+__T4JEqOUYjMzssdVwV/rdgAhvr0Vz9TQUo0noTdeBLxw
+
+meta::internal_function('complete', <<'__Ng9E3d0/jmhiUKZIvh4rNmilwKErUnzBH9Bvwjtu/oM');
+my @functions  = sort keys %externalized_functions;
+my @attributes = (sort keys %data, 
+                  (split "\n", categories ()),
+                  (map {s/^recipe:://; $_} list ()));
+
+sub match {
+  my ($text, @options) = @_;
+  my @matches = sort grep /^$text/, @options;
+
+  if    (@matches == 0) {return undef;}
+  elsif (@matches == 1) {return $matches [0];}
+  elsif (@matches >  1) {return ((longest ($matches [0], $matches [@matches - 1])), @matches);}
+}
+
+sub longest {
+  my ($s1, $s2) = @_; 
+  return substr ($s1, 0, length $1) if ($s1 ^ $s2) =~ /^(\0*)/;
+  return ''; 
+}
+
+# This is another way to implement autocompletion.
+#
+# my $attribs = $term->Attribs;
+# $attribs->{completion_entry_function} = $attribs->{list_completion_function};
+# $attribs->{completion_word} = [sort keys %data, sort keys %externalized_functions];
+
+my ($text, $line) = @_;
+if ($line =~ / /) {
+  # Start matching attribute names.
+  match ($text, @attributes);
+} else {
+  # Start of line, so it's a function.
+  match ($text, @functions);
+}
+__Ng9E3d0/jmhiUKZIvh4rNmilwKErUnzBH9Bvwjtu/oM
+
+meta::internal_function('execute', <<'__FfzmdPKSa4vnT4WNSN3uCxnwrUFKfkQbS6auoIa/SgE');
+my ($name, %options) = @_;
+my $namespace = namespace($name);
+eval {&{"meta::$namespace"}(basename($name), retrieve($name))};
+carp $@ if $@ && $options{'carp'};
+__FfzmdPKSa4vnT4WNSN3uCxnwrUFKfkQbS6auoIa/SgE
+
+meta::internal_function('file::read', <<'__ZxBqZsMZZRuLMQp8Sy//ZsoAvriDebjYLGAX7p7AxXg');
+my $name = shift;
+open my($handle), "<", $name;
+my $result = join "", <$handle>;
+close $handle;
+$result;
+__ZxBqZsMZZRuLMQp8Sy//ZsoAvriDebjYLGAX7p7AxXg
+
+meta::internal_function('file::write', <<'__+NhpMabvNL+hHZaTZwBoFx2IFa79cjOZwGxEXX+xG0o');
+my ($name, $contents, %options) = @_;
+die "Choosing not to overwrite file $name" if $options{'noclobber'} && -f $name;
+open my($handle), ">", $name or die "Can't open $name for writing";
+print $handle $contents;
+close $handle;
+__+NhpMabvNL+hHZaTZwBoFx2IFa79cjOZwGxEXX+xG0o
+
+meta::internal_function('invoke_editor_on', <<'__97Lgs5+qfyAu92Vv5GCVVSYgUgFhOKYkVYXlbWoUs6U');
+my ($data, %options) = @_;
+my $content_hash     = sha256_base64($data);
+my $editor           = $options{'editor'} || $ENV{'VISUAL'} || $ENV{'EDITOR'} ||
+                       messages::error('Either the $VISUAL or $EDITOR environment variable should be set to a valid editor.');
+my $options          = $options{'options'} || $ENV{'VISUAL_OPTS'} || $ENV{'EDITOR_OPTS'} || '';
+my $extension        = $options{'extension'} || '';
+
+my (undef, $filename) = tempfile("$0." . ("X" x 32), OPEN => 0);
+$filename .= $extension;
+
+file::write($filename, $data);
+system("$editor $options \"$filename\"");
+
+my $result = file::read($filename);
+unlink $filename;
+$result;
+__97Lgs5+qfyAu92Vv5GCVVSYgUgFhOKYkVYXlbWoUs6U
+
+meta::internal_function('list', <<'__V5mbdgMwRQQjXaSR3dr3yWF/33Ds/ga9UDUudsvYBlU');
+# Takes a list of categories and returns a list of recipes 
+# in the given categories.
+
+if (@_) {
+  map {my $category = $_;
+       grep /^recipe::${category}::/, sort keys %data} @_;
+} else {
+  grep /^recipe::/, sort keys %data;
+}
+__V5mbdgMwRQQjXaSR3dr3yWF/33Ds/ga9UDUudsvYBlU
+
+meta::internal_function('messages::error', <<'__200qXouilOAQNa4NkmIj6l+Rvb49Jpy8yxvIX29NcK4');
+my ($message) = @_;
+die "$message\n";
+__200qXouilOAQNa4NkmIj6l+Rvb49Jpy8yxvIX29NcK4
+
+meta::internal_function('messages::warning', <<'__DeU/1Klulk/y4fO+wtKt+liOmUKwCEYKM8BvtlXYXBc');
+my ($message) = @_;
+print "$message\n";
+__DeU/1Klulk/y4fO+wtKt+liOmUKwCEYKM8BvtlXYXBc
+
+meta::internal_function('namespace', <<'__D7UfKyyYZ1slZZyaS28hIt8a68jkI3ELBaddROXOHug');
+my ($name) = @_;
+$name =~ s/::.*$//;
+$name;
+__D7UfKyyYZ1slZZyaS28hIt8a68jkI3ELBaddROXOHug
+
+meta::internal_function('retrieve', <<'__h2PeSpk/pPmrzLRTTofdLTbhj06IWUw5WWke6ggUsdk');
+my ($name) = @_;
+$data{$name};
+__h2PeSpk/pPmrzLRTTofdLTbhj06IWUw5WWke6ggUsdk
+
+meta::internal_function('serialize::single', <<'__lDBHaXpbrfER2envI2Ipy77IcdjUnlZou+rggaxsAWE');
+my $name               = shift || $_;
+my $contents           = $data{$name};
+my $delimiter          = "__" . sha256_base64 $contents;
+my $meta_function_name = "meta::" . namespace($name);
+my $invocation_name    = basename $name;
+"$meta_function_name('$invocation_name', <<'$delimiter');\n$contents\n$delimiter\n";
+__lDBHaXpbrfER2envI2Ipy77IcdjUnlZou+rggaxsAWE
+
+meta::internal_function('state_based_filename', <<'__zNSrihAkMKJG5spRYgcFdoNArFKig1u12gIp6gJ8pZw');
+my ($name) = @_;
+my $noise  = $name || state();
+$noise =~ s/\//-/g;
+"$0.$noise";
+__zNSrihAkMKJG5spRYgcFdoNArFKig1u12gIp6gJ8pZw
+
+meta::internal_function('trim', <<'__WJ+D00aRF7UqcgibfVaMvBszB+NcrRpvhaK/gxJezCU');
+# Takes a string and returns a copy without the leading and
+# trailing whitespace.
+
+@_[0] =~ /^\s*([\s\S]*?)\s*$/;
+$1;
+#map /^\s*([\s\S]*?)\s*$/ && $1, @_;
+__WJ+D00aRF7UqcgibfVaMvBszB+NcrRpvhaK/gxJezCU
+
+meta::recipe('dessert::cheesecake', <<'__PDMDaBjzLE6cqmad3cAaHWJD0RHOkG26znpPEIAYfys');
+Cheesecake
+
+Make a Crumble Crust and press it into a buttered pan.
+
+Beat together until well blended:
+
+  2 (8 ounce) packages cream cheese
+  ¼ cup erythritol
+  ½ tsp vanilla
+  2 eggs
+
+Pour over crust.  Bake at 325 degrees F for about 40 minutes, or
+until center is almost set.
+__PDMDaBjzLE6cqmad3cAaHWJD0RHOkG26znpPEIAYfys
+
+meta::recipe('dessert::chess-cake', <<'__L40K4jqDAFn4h5b3Gt35WclzbKCZalmNlWN0s6NtYwo');
+Chess Cake
+
+Combine
+
+  1 box Duncan Hines Butter Cake mix
+  2 eggs
+  4 ounces butter (1 stick)
+
+and press it into a buttered 9 x 13 inch baking pan. Beat together
+
+  8 ounces cream cheese
+  4 ounces butter (1 stick)
+  2 eggs
+  1 tsp vanilla
+
+until smooth. Gradually add in
+
+  4 cups powdered sugar.
+
+Pour the filling into the pan. Bake at 325 degrees for 1 hour.
+__L40K4jqDAFn4h5b3Gt35WclzbKCZalmNlWN0s6NtYwo
+
+meta::recipe('dessert::cream-cheese-frosting', <<'__2h3b+x/NCaptciy6rpwrXkIJJMih9kENScGo2vGrhpw');
+Cream Cheese Frosting
+
+Whip
+
+   ¾ cup heavy cream 
+
+until stiff. In a separate bowl, beat
+
+   8 ounces cream cheese 
+
+until very smooth. Then beat in
+
+   2 Tbsp erythritol
+   1 tsp vanilla.
+
+Turn the mixer to its lowest speed and blend in the whipped
+cream, then turn off the mixer, quick!
+
+Makes 9 servings, each with 3 grams of carbohydrates, no fiber,
+and 2 grams of protein.
+__2h3b+x/NCaptciy6rpwrXkIJJMih9kENScGo2vGrhpw
+
+meta::recipe('dessert::crumble-crust', <<'__y8BobAOr/CyWUrFLqyTPtyF1+bncGwdkurvA7bm9+Qc');
+Crumble Crust
+
+Mix
+
+  1½ cups hazelnut meal
+   ½ cup  flaxseed meal
+   2 Tbsp erythritol
+  4  oz.  butter (1 stick).
+
+Press into bottom of pie plate.
+__y8BobAOr/CyWUrFLqyTPtyF1+bncGwdkurvA7bm9+Qc
+
+meta::recipe('dessert::easy-cheesecake', <<'__X0ppmbJO9vISDsG4MokTc6Li+Jomdo9JZ93yY/Ka1rw');
+Easy Cheesecake
+
+Make a Crumble Crust and press it into a buttered pan.
+
+Beat together
+
+  24 ounces cream cheese, at room temperature
+   ½ cup erythritol
+   3 eggs, added one at a time
+   1 tsp vanilla extract
+
+until the texture is light. Pour the filling into the pan. Bake
+at 350 degrees for 45 minutes. Remove the cake from the oven.
+
+Mix together
+
+   1 pint sour cream
+   3 Tbsp erythritol
+   1 tsp  vanilla extract
+
+and spread on top of cake. Bake for 5 minutes at 500 degrees.
+Chill the cake and garnish with fruit before serving.
+__X0ppmbJO9vISDsG4MokTc6Li+Jomdo9JZ93yY/Ka1rw
+
+meta::recipe('dessert::zucchini-carrot-cake', <<'__FMPCYWwHk1OOBucbYO+V5Ld7cNTQFy6fcUjSuQz0Uu0');
+Zucchini-Carrot Cake
+Tweaked, from 500 Low-Carb Recipes
+
+Doubled:
+4      eggs
+1 cup  oil
+1 cup  yogurt
+1 cup  vanilla-flavored whey protein powder
+2 tsp  baking soda
+½ cup  erythritol
+3 cups ground hazelnuts
+1 tsp  salt
+1 Tbsp cinnamon
+1 tsp  nutmeg
+2 cups shredded zucchini, carrots, or berries
+
+Mix everything together, in order. Turn into a buttered pan and
+bake at 350 degrees for 45 minutes.
+
+Makes 8 servings, each with 8 grams of carbohydrates and 2 grams
+of fiber, for a total of 6 grams of usable carbs and 16 grams of
+protein.
+
+Try it with cream cheese frosting.
+
+Original size:
+2        eggs
+0.5 cup  oil
+0.5 cup  yogurt
+0.5 cup  vanilla-flavored whey protein powder
+1   tsp  baking soda
+0.5 cup  erythritol
+1.5 cups ground hazelnuts
+0.5 tsp  salt
+0.5 Tbsp cinnamon
+0.5 tsp  nutmeg
+1   cup  shredded zucchini, carrots, or berries
+__FMPCYWwHk1OOBucbYO+V5Ld7cNTQFy6fcUjSuQz0Uu0
+
+meta::recipe('meat::breakfast-burritos', <<'__MkICUNe7d5ZtoIADUL1Eg1D4r9+6qNKgd2IkL4Qz4hI');
+Breakfast Burritos
+
+Serves 4
+
+Brown
+
+   2 pounds breakfast sausage.
+
+Scramble
+
+  12 eggs
+
+and serve with
+
+  12 tortillas, warmed
+  mozzarella cheese
+  sour cream
+  salsa.
+__MkICUNe7d5ZtoIADUL1Eg1D4r9+6qNKgd2IkL4Qz4hI
+
+meta::recipe('meat::chili', <<'__+Yw5nM2eWQJB/GhaF1G+d2mI9l3RQOvYBY24a4Ibwnc');
+Chili
+
+Serves 6
+
+In a spice grinder, combine and grind
+
+   2   Tbsp cumin
+   1   Tbsp oregano
+   1   Tbsp paprika
+   0.5 Tbsp sea salt
+   0.5 Tbsp peppercorns.
+
+In a large pot, saute
+
+   6   pounds ground beef
+   0.5 onion, chopped
+   4   cloves garlic, minced.
+
+Stir in the spices and
+
+   1 (28 ounce) can diced tomatoes
+
+Simmer for half an hour. Stir in
+
+   1 bell pepper, chopped
+
+right before serving.
+__+Yw5nM2eWQJB/GhaF1G+d2mI9l3RQOvYBY24a4Ibwnc
+
+meta::recipe('meat::meatloaf', <<'__au9ZD5obap5/ed9MdkEVWqo1LIo1iaPNYszsNiq5G04');
+Meatloaf
+My recipe
+
+In a large mixing bowl, combine:
+
+  5 pounds ground beef
+  6 eggs
+  ½ cup white wine
+  4 oz. butter (1 stick)
+  1 cup flax seed meal
+  2 cups shredded cheese
+  3 or 4 cups finely chopped vegetables
+    (Suggestions: tomatoes, cucumbers, bell peppers, celery)
+
+Add one of the following seasoning combinations:
+
+  1 Tbsp sea salt
+  2 Tbsp parsley, chopped
+  2 Tbsp basil, chopped
+
+  -- OR --
+
+  ¼ cup soy sauce
+  1 lemon juiced
+  2 Tbsp cilantro
+
+  -- OR --
+
+  1 Tbsp sea salt
+  ¼ cup apple cider vinegar
+
+  -- OR --
+
+  BBQ Dry Rub:
+  4 Tbsp paprika
+  2 Tbsp salt
+  2 Tbsp onion powder
+  1 Tbsp dry mustard
+  1 Tbsp pepper
+
+Grease a 5 quart stock pot with butter. Turn in the meat mixture
+and bake at 325 degrees for an hour. Check the internal
+temperature at 15 - 20 minute intervals until it reaches 140
+degrees.
+__au9ZD5obap5/ed9MdkEVWqo1LIo1iaPNYszsNiq5G04
+
+meta::recipe('meat::souvlaki', <<'__E/UWI5p/KqGxhfe4UGkRhqI9vYTkbgUB8GMU60KZ8aM');
+Souvlaki
+
+In a large mixing bowl, combine
+
+  1 lemon, juiced
+  ¼ cup olive oil
+  ¼ cup soy sauce
+  1 tsp dried oregano
+  3 cloves garlic, crushed.
+
+Add
+
+  4 pounds pork tenderloin, cut into 1 inch cubes
+  1 large white onion, diced
+  2 bell peppers, diced
+
+and stir to coat. Cover and refrigerate for 2 - 3 hours.
+
+On a grill: Preheat grill for medium-high heat. Thread pork,
+peppers, and onions onto skewers. Lightly oil grate. Cook for 10
+to 15 minutes, or to desired doneness, turning skewers frequently
+for even cooking.
+
+On a stove: Heat 2 Tbsp of olive oil in a (very) large saute pan,
+add mixture, and saute until desired doneness.
+__E/UWI5p/KqGxhfe4UGkRhqI9vYTkbgUB8GMU60KZ8aM
+
+meta::recipe('meat::spaghetti-meat-sauce', <<'__Bs74itofhEg6SJ7YIHq5gUEHHqMs4UdJOiCU3I71g8Y');
+Spaghetii Meat Sauce
+Tweaked, from Allrecipes.com
+
+Serves 8
+Prep: 20 minutes
+Cook: 60 minutes
+
+In a large mixing bowl, combine
+
+   3 pounds ground beef
+   1 cup flaxseed meal
+   1 cup grated Parmesan cheese
+   1 Tbsp peppercorns, ground
+   2 eggs, beaten.
+
+Mix well, cover, and refrigerate.
+
+In a 5 quart pot, saute
+
+   2 Tbsp olive oil
+   1 white onion, chopped
+   4 cloves garlic, minced
+
+until the onions are tender. Stir in
+
+   2 (28 ounce) cans diced tomatos
+   1 cup dry red wine
+   4 tsp salt.
+
+Reduce heat and simmer uncovered for 30 minutes. With a stick
+blender, puree the sauce.
+
+Stir in meatball mixture. Cover and simmer 30 minutes more.
+Remove from heat. Stir in
+
+   0.5 cup chopped fresh parsley
+   0.5 cup chopped fresh basil
+   1   cup shredded Parmesan cheese
+   1   cup shredded Mozzarella cheese
+
+right before serving.
+__Bs74itofhEg6SJ7YIHq5gUEHHqMs4UdJOiCU3I71g8Y
+
+meta::recipe('meat::stroganoff-casserole', <<'__izu0IXMSABR3kslwmFOUjtpU7RbGTB0FaL70PhKn3ao');
+Stroganoff Casserole
+American Century Cookbook
+
+Serves 8
+
+In a 5 quart pot, brown
+
+   3 pounds ground beef
+   2 large onions, coarsely chopped
+   2 cloves garlic, minced.
+   1 tsp dried leaf marjoram, crumbled
+
+Stir in 
+
+   1 (8 ounce) can tomato sauce
+  16 ounces cottage cheese
+   8 ounces cream cheese, softened
+   salt and pepper to taste.
+
+Scatter
+
+   1 cup coarsely shredded cheddar cheese
+
+evenly on top. Turn into a buttered casserole pan and bake
+uncovered at 350 degrees until browned and bubbly -- 25 to 30
+minutes.
+__izu0IXMSABR3kslwmFOUjtpU7RbGTB0FaL70PhKn3ao
+
+meta::recipe('poultry::caesar-chicken', <<'__zCR0QH0k+vym9m/VyRKnV91trcyPjTrPqV3zFOtYZiU');
+Caesar Chicken
+
+In a 5 quart stockpot, saute over medium heat
+
+  4 ounces butter (1 stick)
+  3 cloves garlic, minced
+  1 bell pepper, chopped
+  4 pounds chicken, cut into 1 inch cubes
+
+until the chicken is fork tender, 7 to 10 minutes. Remove from
+heat. Add
+
+  ½ cup Caesar salad dressing
+  1 cup Parmesan cheese.
+
+and toss to coat. Garnish with:
+
+  1 medium tomato, diced
+  cilantro or parsley
+__zCR0QH0k+vym9m/VyRKnV91trcyPjTrPqV3zFOtYZiU
+
+meta::recipe('poultry::chicken-enchiladas', <<'__h9wGKEjlmrZwIM7dm0+jvBq18VbGxpmSAQNyl/GTUnI');
+Chicken Enchiladas
+
+Serves 8
+
+In a large pot, saute
+
+   1 stick butter (8 Tbsp)
+   1 onion, diced
+
+until tender. Remove from heat and mix in 
+
+   8 ounces diced green chile peppers
+   8 ounces cream cheese
+   1 Tbsp cumin
+   8 cups cooked chicken, chopped.
+
+Roll up about 3 Tbsp of the chicken mixture in each of 
+
+  16 flour tortillas.
+
+Place them seam side down into two greased 9" x 13" rectangular
+baking dishes.
+
+In a large mixing bowl, whisk together
+
+   3 cups chicken broth
+   2 cups heavy cream
+   2 Tbsp guar
+   1 Tbsp salt
+  16 ounces sour cream.
+
+Pour the soup mixture evenly over the tortillas in the baking
+dish. Bake at 350 degrees for 30 to 40 minutes.
+
+Sprinkle enchiladas with
+
+   2 cups shredded cheese.
+
+and bake 5 minutes more.
+
+Note: To make a casserole, chop the tortillas into bite-size
+pieces. Layer half the tortilla bites, the chicken filling, and
+the rest of the tortilla bites. Pour the soup over top. Bake as
+instructed.
+__h9wGKEjlmrZwIM7dm0+jvBq18VbGxpmSAQNyl/GTUnI
+
+meta::recipe('poultry::chicken-parisienne', <<'__D1ZxDFdGQT/jAMtaOqBwJf9cYU/chS5zyyf3aEP3X6I');
+Chicken Parisienne
+
+In a 5 quart stock pot, saute until tender:
+
+   2 ounces butter (½ stick)
+   1 onion, diced.
+
+Add
+
+   4 pounds chicken
+   ½ cup dry white wine
+   salt and pepper
+
+and let simmer for 30 minutes. Stir in
+
+   1 cup heavy cream
+   8 ounces sour cream.
+
+Heat through and serve.
+__D1ZxDFdGQT/jAMtaOqBwJf9cYU/chS5zyyf3aEP3X6I
+
+meta::recipe('poultry::creamed-chicken-with-vegetables', <<'__14NHuXTB8QuR8Wk/haF2/g+soIbhbtu1io343QZNOL8');
+Creamed Chicken With Vegetables
+
+(This used to be Creamed Chicken With Mushrooms, from Jim's
+Atkins Cookbook, but I can't have mushrooms now.)
+
+In a very large pot, sauté
+
+  4 ounces butter (1 stick)
+  4 pounds boneless chicken, cut into 1 inch pieces
+  1 pound vegetables.
+
+In a separate pot, saute
+
+  2 ounces butter (half stick)
+  1 onion, chopped
+
+until tender. Add
+
+  2 cups dry white wine
+  4 cups heavy cream
+
+and bring to a boil. Pour the sauce into the chicken pot. Stir in
+
+  2 cups chopped fresh parsley
+
+and serve.
+__14NHuXTB8QuR8Wk/haF2/g+soIbhbtu1io343QZNOL8
+
+meta::recipe('poultry::deviled-eggs', <<'__uOSVVJh9PDHyT63PuXtq7gV4nhpfowQ2gUMdnca98es');
+Deviled Eggs
+Allrecipes.com
+
+Slice
+
+  6 hard-cooked eggs
+
+in half lengthwise. Scrape the yolks into a mixing bowl and set
+the whites aside. Mash the yolks with a fork and mix in
+
+  2   Tbsp mayonnaise
+  1   tsp sugar
+  1   tsp white vinegar
+  1   tsp prepared mustard
+  0.5 tsp salt.
+
+Pipe the filling back into the egg whites. Sprinkle with
+
+  paprika
+
+and refrigerate until serving.
+__uOSVVJh9PDHyT63PuXtq7gV4nhpfowQ2gUMdnca98es
+
+meta::recipe('poultry::tomatoes+eggs', <<'__J5nBS9boA40eisiTLoeeWvDejaBnWfWXJH/OIBuQ7eo');
+Tomatoes and Eggs
+Family recipe
+
+Scramble
+
+   6 eggs
+
+until they're still just a little runny. Remove the eggs from the
+skillet and set aside.
+
+Saute
+
+   4 scallions, chopped
+   4 Tbsp vegetable oil
+
+for a minute.
+
+   1 large slicing tomato, chopped
+   1 tsp salt.
+
+Cover and let simmer until the tomatoes are soft, but not mushy
+(2 to 3 minutes). Stir the eggs back in and let them set. Serve.
+__J5nBS9boA40eisiTLoeeWvDejaBnWfWXJH/OIBuQ7eo
+
+meta::recipe('sauce::chinese-sauce', <<'__GZYY4uEq7605HLprEaiHJ/OVc+4XCKwBz9pyy6BJfk4');
+Chinese Sauce
+My parents
+
+1   part  chopped ginger
+1   part  chopped garlic
+3   parts soy sauce
+1   part  rice vinegar (Chinkiang black rice vinegar if available)
+1   part  sugar
+0.5 part  sesame oil
+a   dash  prickly ash oil
+
+Mix everything together in a jar and let sit for 24 - 48 hours.
+Shake before using.
+__GZYY4uEq7605HLprEaiHJ/OVc+4XCKwBz9pyy6BJfk4
+
+meta::recipe('seafood::fish-with-tahini-sauce', <<'__rrHKWTDSEHSO9RiTeWjk+8fYnlEqscOaDJN0VgEsYh4');
+Fish with Tahini Sauce
+Allrecipes.com
+
+Arrange
+
+  2 pounds catfish fillets
+
+on a greased baking dish in a single layer and bake at 375
+degrees F until the fish flakes easily with a fork, 45 to 60
+minutes.
+
+Meanwhile, whisk together
+
+  1 cup tahini
+  2 cloves garlic, minced
+  salt to taste
+  1 lemon juiced (optional - if sauce isn't too sour already).
+
+Cut the cooked fish into 1-inch cubes and pour the tahini sauce
+over it. Garnish with parsley.
+__rrHKWTDSEHSO9RiTeWjk+8fYnlEqscOaDJN0VgEsYh4
+
+meta::recipe('seafood::shrimp-alfredo', <<'__fbHwpmvgHixsHHzZh5A+1tM+e5iGYsYlfa/0UUloJI0');
+Shrimp Alfredo
+500 Low-Carb Recipes, my adaptation
+
+Serves 6
+
+In a large pot, saute
+
+   1 stick  butter (4 ounces)
+   2 cloves garlic, minced.
+
+Stir in
+
+  32 ounces broccoli, chopped
+  32 ounces shrimp, peeled and chopped
+
+and saute for a few minutes. Add
+
+   1 pint   heavy cream
+   1 tsp    guar or xanthan
+   6 ounces Parmesan cheese.
+
+Heat through. Serve.
+__fbHwpmvgHixsHHzZh5A+1tM+e5iGYsYlfa/0UUloJI0
+
+meta::recipe('seasoning::bbq-dry-rub', <<'__YR14SQ8+Y9LC9plK6pFWbFoDfkEXYkYZdrwxy4aj0zs');
+BBQ Dry Rub
+
+4 parts paprika
+2 parts salt
+2 parts onion powder
+1 part  dry mustard
+1 part  pepper
+__YR14SQ8+Y9LC9plK6pFWbFoDfkEXYkYZdrwxy4aj0zs
+
+meta::recipe('seasoning::chili-mix', <<'__djsQTavIbfUEURg9j25fWGiKnrGr8n1m9xQWKR4Ol9o');
+Chili Mix
+
+4 parts cumin
+2 parts paprika
+2 parts oregano
+1 part  sea salt
+1 part  peppercorns
+__djsQTavIbfUEURg9j25fWGiKnrGr8n1m9xQWKR4Ol9o
+
+meta::recipe('soup::clam-chowder', <<'__OnhBEeM9Q2wOxw8KO2VoDVsiM6UNi3baKVRu9VVQzO8');
+Clam Chowder
+
+Serves 8
+Prep: 30 minutes
+Cook: 30 minutes
+
+In a medium pot, cover
+
+  1 head cauliflower, finely chopped
+
+with water and add
+
+  1   Tbsp salt
+  0.5 cup  heavy cream.
+
+Bring to a boil and cook until tender, about 15 minutes. Drain
+and set aside.
+
+In a large pot, saute 
+
+  1 stick butter (4 ounces)
+  2 large onions, chopped
+
+until the onions are tender. Add
+
+  1 quart shucked clams, with liquid
+  6 (8 ounce) jars clam juice
+
+and bring to a boil. 
+
+Stir in cooked cauliflower and
+
+  2.5 cups heavy cream
+  salt and pepper, to taste
+  1 tsp fresh dill weed, chopped.
+
+Heat through but do not boil.
+
+
+Substitutions:
+
+4 (6.5 ounce) cans of baby clams instead of 1 quart clams
+1 bottle clam juice + 5 cups chicken broth instead of 6 bottles clam juice
+__OnhBEeM9Q2wOxw8KO2VoDVsiM6UNi3baKVRu9VVQzO8
+
+meta::recipe('soup::cream-soup', <<'__g77ebe9Q3jTnsj/uWNwU69BauobrCoV7j9VAr41P7vU');
+Cream Soup
+My recipe
+
+Whisk together
+
+   1    cup broth
+   1    cup heavy cream
+   1    tsp guar
+   0.25 tsp salt.
+
+This recipe makes a good substitute for storebought cream of
+mushroom soup. Each (10.75 ounce) can of cream of mushroom soup
+contains about 1 cup.
+__g77ebe9Q3jTnsj/uWNwU69BauobrCoV7j9VAr41P7vU
+
+meta::recipe('soup::ham-tuna+seaweed-soup', <<'__mG24KMSeBBSdpfCnSpgnq8r7bUeLcoC7CU9NHUNkEKA');
+Ham, Tuna, and Seaweed Soup
+My recipe
+
+In a large pot, bring
+
+  3 cups cooked ham, cut into 1 inch cubes
+  4 cups water
+
+to a boil. Add
+
+  1   (6 ounce) can Starkist Chunk Light Tuna
+  4   sheets seaweed
+  2   Tbsp oil
+  pinch of salt (no more than 0.5 tsp!)
+
+Simmer 20 minutes.
+__mG24KMSeBBSdpfCnSpgnq8r7bUeLcoC7CU9NHUNkEKA
+
+meta::recipe('vegetable::fauxtatoes', <<'__GyJ9qcvkCJbzj+nFZpQCINPCAYn3pkMV05gype+e12k');
+Fauxtatoes
+500 Low Carb Recipes
+
+Serves 6
+
+Cover
+
+  1 large head cauliflower
+  ⅓ cup cream
+
+with water and simmer until cauliflower is very soft (about 15
+minutes). (The cream keeps the cauliflower sweet and prevents it
+from turning a nasty gray.) 
+
+Put the cauliflower in a food processor with
+
+  4 ounces cream cheese
+  1 Tbsp butter
+  salt & pepper, to taste
+
+and process until smooth.
+
+Per serving: 4 grams effective carbs, 2 grams fiber, 4 grams
+protein
+__GyJ9qcvkCJbzj+nFZpQCINPCAYn3pkMV05gype+e12k
+
+meta::internal('runtime', <<'__YPmIzwZkTg8URmPfjiwGRG4VDUF2ZCJqTEz+gjETYLQ');
+my $initial_state = sha256_base64 serialize();
+
+push @script_args, shift @ARGV while @ARGV && $ARGV[0] =~ /^-/;
+
+my $default_action = retrieve('data::default-action');
+chomp $default_action;
+my $function_name = shift(@ARGV) || $default_action || 'usage';
+$function_name = 'usage' unless $externalized_functions{$function_name};
+my $result = &{$function_name}(@ARGV);
+chomp $result;
+print "$result\n" if $result;
+
+END {
+  my $serialized_data = serialize();
+  my $final_state     = sha256_base64 $serialized_data;
+  save() unless $initial_state eq $final_state;
+}
+
+__YPmIzwZkTg8URmPfjiwGRG4VDUF2ZCJqTEz+gjETYLQ
+
+__END__
