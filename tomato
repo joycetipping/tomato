@@ -971,16 +971,20 @@ Pour over crust.  Bake at 325 degrees F for about 40 minutes, or
 until center is almost set.
 __PDMDaBjzLE6cqmad3cAaHWJD0RHOkG26znpPEIAYfys
 
-meta::recipe('dessert::chess-cake', <<'__L40K4jqDAFn4h5b3Gt35WclzbKCZalmNlWN0s6NtYwo');
+meta::recipe('dessert::chess-cake', <<'__fZPW3JK6UvWXKIurfs/yoKgR1Iri8X+SxP4+I6KrDH4');
 Chess Cake
 
 Combine
 
-  1 box Duncan Hines Butter Cake mix
+  1 box butter cake mix
   2 eggs
   4 ounces butter (1 stick)
 
-and press it into a buttered 9 x 13 inch baking pan. Beat together
+and press it into a buttered 9 x 13 inch baking pan. (If using a
+different pan, make sure the batter fills it less than halfway --
+it rises a lot!)
+
+Beat together
 
   8 ounces cream cheese
   4 ounces butter (1 stick)
@@ -992,7 +996,7 @@ until smooth. Gradually add in
   4 cups powdered sugar.
 
 Pour the filling into the pan. Bake at 325 degrees for 1 hour.
-__L40K4jqDAFn4h5b3Gt35WclzbKCZalmNlWN0s6NtYwo
+__fZPW3JK6UvWXKIurfs/yoKgR1Iri8X+SxP4+I6KrDH4
 
 meta::recipe('dessert::cream-cheese-frosting', <<'__2h3b+x/NCaptciy6rpwrXkIJJMih9kENScGo2vGrhpw');
 Cream Cheese Frosting
@@ -1116,35 +1120,43 @@ and serve with
   salsa.
 __MkICUNe7d5ZtoIADUL1Eg1D4r9+6qNKgd2IkL4Qz4hI
 
-meta::recipe('meat::chili', <<'__+Yw5nM2eWQJB/GhaF1G+d2mI9l3RQOvYBY24a4Ibwnc');
+meta::recipe('meat::chili', <<'__YnFv2rYKNj7dDuS2zywAMjphl7McjUVCpSUkJ8H74so');
 Chili
 
 Serves 6
 
 In a spice grinder, combine and grind
 
-   2   Tbsp cumin
-   1   Tbsp oregano
-   1   Tbsp paprika
-   0.5 Tbsp sea salt
-   0.5 Tbsp peppercorns.
+   2 Tbsp whole cumin seed
+   2 Tbsp oregano leaves
+   1 Tbsp paprika or chili powder*
+   1 Tbsp sea salt
+   1 Tbsp peppercorns.
+
+*Paprika gives it a clear sweet taste, chili powder a musky spicy
+ flavor.
 
 In a large pot, saute
 
-   6   pounds ground beef
-   0.5 onion, chopped
-   4   cloves garlic, minced.
+   2 Tbsp olive oil
+   1 onion, chopped.
+   3 cloves garlic, minced.
 
-Stir in the spices and
+Stir in the ground spices and
 
-   1 (28 ounce) can diced tomatoes
+   5 pounds ground beef.
 
-Simmer for half an hour. Stir in
+Continue stirring until the beef is mostly cooked. Add
+
+   1 (14 ounce) can diced tomatoes.
+
+Cover and simmer for 15 to 30 minutes (depending on how hungry
+you are!). Stir in
 
    1 bell pepper, chopped
 
 right before serving.
-__+Yw5nM2eWQJB/GhaF1G+d2mI9l3RQOvYBY24a4Ibwnc
+__YnFv2rYKNj7dDuS2zywAMjphl7McjUVCpSUkJ8H74so
 
 meta::recipe('meat::meatloaf', <<'__au9ZD5obap5/ed9MdkEVWqo1LIo1iaPNYszsNiq5G04');
 Meatloaf
@@ -1265,7 +1277,7 @@ Remove from heat. Stir in
 right before serving.
 __Bs74itofhEg6SJ7YIHq5gUEHHqMs4UdJOiCU3I71g8Y
 
-meta::recipe('meat::stroganoff-casserole', <<'__izu0IXMSABR3kslwmFOUjtpU7RbGTB0FaL70PhKn3ao');
+meta::recipe('meat::stroganoff-casserole', <<'__gwU/doCjDaT83yT9BWaSnGuI/Ai8oGr7JV5Dkro92+A');
 Stroganoff Casserole
 American Century Cookbook
 
@@ -1273,9 +1285,9 @@ Serves 8
 
 In a 5 quart pot, brown
 
-   3 pounds ground beef
-   2 large onions, coarsely chopped
-   2 cloves garlic, minced.
+   5 pounds ground beef
+   1 large onion, coarsely chopped
+   3 cloves garlic, minced.
    1 tsp dried leaf marjoram, crumbled
 
 Stir in 
@@ -1287,12 +1299,39 @@ Stir in
 
 Scatter
 
-   1 cup coarsely shredded cheddar cheese
+   2 cup coarsely shredded cheddar cheese
 
 evenly on top. Turn into a buttered casserole pan and bake
 uncovered at 350 degrees until browned and bubbly -- 25 to 30
 minutes.
-__izu0IXMSABR3kslwmFOUjtpU7RbGTB0FaL70PhKn3ao
+__gwU/doCjDaT83yT9BWaSnGuI/Ai8oGr7JV5Dkro92+A
+
+meta::recipe('meat::stuffed-bell-peppers', <<'__9/xec2sMlFMddQIOiYofHxtegb1j2FMSEaBLT/qyQ2A');
+Stuffed Bell Peppers
+
+In a spice grinder, grind
+
+  2 Tbsp paprika
+  1 Tbsp onion flakes
+  1 Tbsp mustard seed
+  1 Tbsp pepper
+  1 tsp salt, or to taste
+
+In a large mixing bowl, with clean hands, mix the spices into
+
+  3 pounds ground beef.
+
+Slice
+
+  4 large bell peppers (any color)
+
+lengthwise and remove the seeds. Place them on a baking sheet and
+stuff them evenly with the ground beef mixture, heaping the meat
+as high as possible. Form any leftover meat into meatballs and
+place on the baking sheet.
+
+Bake for 10 minutes at 450 degrees.
+__9/xec2sMlFMddQIOiYofHxtegb1j2FMSEaBLT/qyQ2A
 
 meta::recipe('poultry::caesar-chicken', <<'__zCR0QH0k+vym9m/VyRKnV91trcyPjTrPqV3zFOtYZiU');
 Caesar Chicken
@@ -1316,52 +1355,47 @@ and toss to coat. Garnish with:
   cilantro or parsley
 __zCR0QH0k+vym9m/VyRKnV91trcyPjTrPqV3zFOtYZiU
 
-meta::recipe('poultry::chicken-enchiladas', <<'__h9wGKEjlmrZwIM7dm0+jvBq18VbGxpmSAQNyl/GTUnI');
+meta::recipe('poultry::chicken-enchilada-casserole', <<'__aI6aRsGyP7ey+tJh+PTGA74+OydpSuhditBkAnLw0Zo');
 Chicken Enchiladas
 
 Serves 8
 
-In a large pot, saute
+Filling:
 
-   1 stick butter (8 Tbsp)
-   1 onion, diced
+  In a large pot, saute
 
-until tender. Remove from heat and mix in 
+     1 stick butter (8 Tbsp)
+     1 onion, diced
 
-   8 ounces diced green chile peppers
-   8 ounces cream cheese
-   1 Tbsp cumin
-   8 cups cooked chicken, chopped.
+  until the onions are tender. Remove from heat and mix in 
 
-Roll up about 3 Tbsp of the chicken mixture in each of 
+     8 cups cooked chicken, chopped
+     2 pounds broccoli, chopped
+     8 ounces cream cheese
+     2 tsp salt
+     1 Tbsp cumin
+     1 Tbsp pepper.
 
-  16 flour tortillas.
+Soup:
 
-Place them seam side down into two greased 9" x 13" rectangular
-baking dishes.
+  In a large mixing bowl, whisk together
 
-In a large mixing bowl, whisk together
+     2 cups chicken broth
+     ½ cup white wine
+    16 ounces sour cream
+     4 cups shredded cheese
+     2 Tbsp chives.
 
-   3 cups chicken broth
-   2 cups heavy cream
-   2 Tbsp guar
-   1 Tbsp salt
-  16 ounces sour cream.
+Put it all together:
 
-Pour the soup mixture evenly over the tortillas in the baking
-dish. Bake at 350 degrees for 30 to 40 minutes.
+  Shred
 
-Sprinkle enchiladas with
+    16 tortillas
 
-   2 cups shredded cheese.
-
-and bake 5 minutes more.
-
-Note: To make a casserole, chop the tortillas into bite-size
-pieces. Layer half the tortilla bites, the chicken filling, and
-the rest of the tortilla bites. Pour the soup over top. Bake as
-instructed.
-__h9wGKEjlmrZwIM7dm0+jvBq18VbGxpmSAQNyl/GTUnI
+  into bite-size pieces and spread evenly over the bottom of the
+  baking dish. Press in the chicken filling, and pour the soup over
+  the top. Bake at 350 degrees for 30 minutes.
+__aI6aRsGyP7ey+tJh+PTGA74+OydpSuhditBkAnLw0Zo
 
 meta::recipe('poultry::chicken-parisienne', <<'__D1ZxDFdGQT/jAMtaOqBwJf9cYU/chS5zyyf3aEP3X6I');
 Chicken Parisienne
@@ -1438,6 +1472,35 @@ Pipe the filling back into the egg whites. Sprinkle with
 and refrigerate until serving.
 __uOSVVJh9PDHyT63PuXtq7gV4nhpfowQ2gUMdnca98es
 
+meta::recipe('poultry::ginger-chicken', <<'__0OX3KwomGquEb4cA+0qjRLwUsd6opdh7b/nNNVSOwiM');
+Ginger Chicken
+
+Grind
+
+  1 Tbsp dried ginger root
+  1 tsp  white peppercorns
+
+in a spice grinder and set aside. In a 5 quart stockpot, stir-fry
+over medium heat
+
+  2 Tbsp sesame oil
+  ½ white onion, diced
+
+until the onions are translucent. Add the ground spices and
+
+  4 pounds boneless chicken, chopped into 1 inch cubes
+  2 Tbsp soy sauce
+  ½ cup water.
+
+Turn the heat down to medium-low, cover, and simmer, stirring
+every few minutes, until the chicken is cooked -- 5 to 7 minutes.
+Remove from heat and stir in
+
+  1 bell pepper, chopped
+
+right before serving.
+__0OX3KwomGquEb4cA+0qjRLwUsd6opdh7b/nNNVSOwiM
+
 meta::recipe('poultry::tomatoes+eggs', <<'__J5nBS9boA40eisiTLoeeWvDejaBnWfWXJH/OIBuQ7eo');
 Tomatoes and Eggs
 Family recipe
@@ -1463,21 +1526,21 @@ Cover and let simmer until the tomatoes are soft, but not mushy
 (2 to 3 minutes). Stir the eggs back in and let them set. Serve.
 __J5nBS9boA40eisiTLoeeWvDejaBnWfWXJH/OIBuQ7eo
 
-meta::recipe('sauce::chinese-sauce', <<'__GZYY4uEq7605HLprEaiHJ/OVc+4XCKwBz9pyy6BJfk4');
+meta::recipe('sauce::chinese-sauce', <<'__/XWJQ+LBIatr49hLlq6sioD4K96Vi729ENoo8hm6DWQ');
 Chinese Sauce
 My parents
 
-1   part  chopped ginger
-1   part  chopped garlic
-3   parts soy sauce
-1   part  rice vinegar (Chinkiang black rice vinegar if available)
-1   part  sugar
-0.5 part  sesame oil
-a   dash  prickly ash oil
+1 part  chopped ginger
+1 part  chopped garlic
+3 parts soy sauce
+1 part  rice vinegar (Chinkiang black rice vinegar if available)
+1 part  sugar
+½ part  sesame oil
+a dash  prickly ash oil
 
 Mix everything together in a jar and let sit for 24 - 48 hours.
 Shake before using.
-__GZYY4uEq7605HLprEaiHJ/OVc+4XCKwBz9pyy6BJfk4
+__/XWJQ+LBIatr49hLlq6sioD4K96Vi729ENoo8hm6DWQ
 
 meta::recipe('seafood::fish-with-tahini-sauce', <<'__rrHKWTDSEHSO9RiTeWjk+8fYnlEqscOaDJN0VgEsYh4');
 Fish with Tahini Sauce
