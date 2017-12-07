@@ -621,16 +621,16 @@ my @categories = @_;
 file::write ($name, view (@categories));
 __Puec/JJJPVlhSOzPmcXdmeQncflsxSLZqpsY7rJVBJc
 
-meta::function('recipe_export_each', <<'__v5NNhmwltk5lIxc08E/9M5Oaak5XsiLUxUZmX1Vka8Q');
+meta::function('recipe_export_each', <<'__MV7ZiEGaGGCq01KguvDffGRdbJuxz3FpFUVySoD6T90');
 @categories = @_ ? @_ : split "\n", categories ();
 @recipes    = list (@categories);
 
 for my $recipe (@recipes) {
-  ($recipe = $string) =~ m/^recipe::(.*?)::(.*)$/;
+  $recipe =~ m/^recipe::(.*?)::(.*)$/;
   my $name = "$1-$2";
-  file::write ("$name.txt", cat ("$recipe"));
+  file::write ("$name.txt", cat ($recipe));
 }
-__v5NNhmwltk5lIxc08E/9M5Oaak5XsiLUxUZmX1Vka8Q
+__MV7ZiEGaGGCq01KguvDffGRdbJuxz3FpFUVySoD6T90
 
 meta::function('recipe_import', <<'__U1v8zJaZlEgHIc19uLGkbfsJ084wxtQ301dG3pzC9/Q');
 my $name  = "recipe::" . pop @_;
